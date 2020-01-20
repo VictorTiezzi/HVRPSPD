@@ -1,3 +1,9 @@
+#idea files
+.idea/
+
+#Data files
+*.dat
+
 # Compiled class file
 *.class
 
