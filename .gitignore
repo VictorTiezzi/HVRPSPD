@@ -1,8 +1,10 @@
 #idea files
 .idea/
 
-#Data files
+#Data and solution files
 *.dat
+*.sol
+*.evo
 
 # Compiled class file
 *.class
