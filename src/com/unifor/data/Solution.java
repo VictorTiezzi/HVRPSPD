@@ -1,4 +1,4 @@
-package data;
+package com.unifor.data;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -32,10 +32,12 @@ public class Solution {
 		printer.printf("%-15s%15.2f\n", "Total cost:", totalCost);
 		printer.printf("%-15s%15.2f\n", "Solving time:", solvingTime);
 		printer.printf("%-15s%15d\n", "Iteration:", iteration);
+		printer.printf("%-15s%15d\n", "Types:", routes.size());
 		printer.println("------------------------------");
 		for (int r = 0; r < routes.size(); r++) {
 			Route route = routes.get(r);
 			printer.printf("%-15s%d\n", "Vehicle type:", route.vehicleType.id);
+			printer.printf("%-15s%15.2f\n", "Route cost:", route.totalCost);
 			printer.printf("%-15s", "Route: ");
 			for (int n = 0; n < route.nodes.size(); n++) {
 				Node node = route.nodes.get(n);
