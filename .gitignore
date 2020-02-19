@@ -3,7 +3,6 @@
 HVRPSPD.iml
 
 #Data and solution files
-*.dat
 *.sol
 *.evo
 

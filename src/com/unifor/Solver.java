@@ -1,14 +1,14 @@
 package com.unifor;
-/**
- * Article: A Fast Randomized Algorithm for the Heterogeneous Vehicle Routing Problem with Simultaneous Pickup and Delivery
- * Available online at https://doi.org/10.3390/a12080158
- */
-
 import com.unifor.data.*;
 
 import java.io.*;
 import java.util.Locale;
 
+/**
+ * Article: A Fast Randomized Algorithm for the Heterogeneous Vehicle Routing Problem with Simultaneous Pickup and Delivery
+ * Available online at https://doi.org/10.3390/a12080158
+ * @author Nepomuceno
+ */
 public class Solver {
 
     public static void main(String[] args) {
@@ -32,7 +32,7 @@ public class Solver {
                 for (int exec = 1; exec <= numberOfExecutions; exec++) {
                     for (double rate : rates) {
                         Data data = new Data(filename);
-                        PrintStream printerEvolution = null;
+                        PrintStream printerEvolution;
                         int greedyTestNum = 1;
 
                         printerEvolution = new PrintStream(fileDirectory + "/" + filename + "--" + greedyTestNum + "-" + String.format("-rate-%4.2f", rate) + String.format("-exec-%02d", exec) + ".evo");

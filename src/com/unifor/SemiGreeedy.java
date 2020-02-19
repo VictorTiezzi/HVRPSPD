@@ -36,7 +36,7 @@ public class SemiGreeedy {
                 boolean first = true;
                 boolean feasibleNodes = true;
 
-                int suddenlyStops = 3;
+                //int suddenlyStops = 3;
                 int numberOfClients = 3;
                 //fim dados do caminhão
 
@@ -46,7 +46,7 @@ public class SemiGreeedy {
 
                 // rota do caminhão
                 while (feasibleNodes) {
-                    int ss = 1;
+                    //int ss = 1;
                     Node trial = null;
                     //int trialIndex = -1;
 
@@ -61,13 +61,17 @@ public class SemiGreeedy {
                                 list.add(next);
                             }
                         }
+
+                        //Arrays.sort(new List[]{list});
                         Collections.sort(list);
+
                         List<Node> escolhidos = new ArrayList<>();
                         for(int i = 0; i < numberOfClients; i++){
                             if(i+1 <= list.size()){
                                 escolhidos.add(list.get(i));
                             }
                         }
+
                         trial = escolhidos.get(randomGenerator.nextInt(escolhidos.size()));
 
                     } else {
@@ -118,12 +122,12 @@ public class SemiGreeedy {
                     }
                     //fim teste de viabilidade
 
-                    if (trial.infeasible) {
-                        ss++;
-                        if (suddenlyStops > ss) {
-                            break;
-                        }
-                    }
+//                    if (trial.infeasible) {
+//                        ss++;
+//                        if (suddenlyStops > ss) {
+//                            break;
+//                        }
+//                    }
 
                     // teste de parada
                     feasibleNodes = false;
