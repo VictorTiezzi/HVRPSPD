@@ -9,15 +9,43 @@ public class SemiGreeedy {
 
     Solution solution;
 
+    class Truck {
+        Type type;
+        double capacity;
+        double fixedCost;
+        double variableCost;
+        double initialLoad;
+        List<Node> nodes;
+        Node end;
+        boolean first;
+        boolean feasibleNodes;
+        //Set<Node> infeasibleNodes;
+
+        public Truck(Data data) {
+            this.type = data.types[new Random().nextInt(data.nTypes)];
+            capacity = type.capacity;
+            fixedCost = type.fixedCost;
+            variableCost = type.variableCost;
+            initialLoad = 0;
+            nodes = new ArrayList<>();
+            nodes.add(data.nodes[0]);
+            end = data.nodes[0];
+            first = true;
+            feasibleNodes = true;
+            //infeasibleNodes = new HashSet<>();
+        }
+    }
+
     public SemiGreeedy(Data data, int timeLimit, PrintStream printer) {
         double startTime = System.currentTimeMillis();
         Random randomGenerator = new Random();
         int iteration = 0;
         double currentTime = 0.0;
-        while (iteration <= 10000) {
+        while (currentTime <= timeLimit) {
 
             List<Route> routes = new ArrayList<>();
             List<Node> freeNodes = new ArrayList<>(Arrays.asList(data.nodes));
+
             freeNodes.remove(0);
             Collections.shuffle(freeNodes);
 
@@ -25,17 +53,9 @@ public class SemiGreeedy {
             while (!freeNodes.isEmpty()) {// teste de parada da iteração
 
                 // dados do caminhão
-                Type type = data.types[randomGenerator.nextInt(data.nTypes)];
-                double capacity = type.capacity;
-                double fixedCost = type.fixedCost;
-                double initialLoad = 0;
-                totalCost += fixedCost;
-                List<Node> nodes = new ArrayList<>();
-                nodes.add(data.nodes[0]);
-                Node end = data.nodes[0];
-                boolean first = true;
-                boolean feasibleNodes = true;
-
+                Truck truck = new Truck(data);
+                totalCost += truck.fixedCost;
+                
                 //int suddenlyStops = 3;
                 int numberOfClients = 3;
                 //fim dados do caminhão
@@ -45,41 +65,36 @@ public class SemiGreeedy {
                 }
 
                 // rota do caminhão
-                while (feasibleNodes) {
+                while (truck.feasibleNodes) {
                     //int ss = 1;
                     Node trial = null;
-                    //int trialIndex = -1;
 
                     // escolhendo um cliente
-                    if (!first) {
+                    List<Node> escolhidos = new ArrayList<>();
+
+                    if (truck.first) {
                         List<Node> list = new ArrayList<>();
 
                         for (Node next : freeNodes) {
                             if (!next.infeasible) {
-                                Link link = new Link(end, next, false);
+                                Link link = new Link(truck.end, next, false);
                                 next.distanceNode = link.distance;
                                 list.add(next);
                             }
                         }
-
-                        //Arrays.sort(new List[]{list});
                         Collections.sort(list);
-
-                        List<Node> escolhidos = new ArrayList<>();
-                        for(int i = 0; i < numberOfClients; i++){
-                            if(i+1 <= list.size()){
+                        for (int i = 0; i < numberOfClients; i++) {
+                            if (i < list.size()) {
                                 escolhidos.add(list.get(i));
                             }
                         }
-
-                        trial = escolhidos.get(randomGenerator.nextInt(escolhidos.size()));
 
                     } else {
                         for (int n = 0; n < freeNodes.size(); n++) {
                             Node next = freeNodes.get(n);
                             if (!next.infeasible) {
                                 trial = next;
-                                first = false;
+                                truck.first = false;
                                 break;
                             }
                         }
@@ -88,39 +103,67 @@ public class SemiGreeedy {
                     // fim escolhendo um cliente
 
                     // teste de viabilidade
-                    assert trial != null;
-                    double loadTrial = initialLoad + trial.delivery;
-                    if (loadTrial > capacity) {
-                        trial.infeasible = true;
-                    } else {
-                        boolean feasibleRoute = true;
-                        for (int m = 1; m < nodes.size(); m++) {
-                            Node next = nodes.get(m);
-                            loadTrial += next.pickup - next.delivery;
-                            if (loadTrial > capacity) {
-                                trial.infeasible = true;
-                                feasibleRoute = false;
-                                break;
-                            }
-                        }
+                    Boolean viavel;
+                    if(!escolhidos.isEmpty()){
+                        //escolha aleatoria entre os selecionados
+//                        do{
+//                            trial = escolhidos.remove(randomGenerator.nextInt(escolhidos.size()));
+//                            assert trial != null;
+//                            viavel = viabilidade(trial, truck);
+//                            if (viavel) {
+//                                Link link = new Link(truck.end, trial, false);
+//                                totalCost += link.distance * truck.type.variableCost;
+//                                freeNodes.remove(trial);
+//                                truck.nodes.add(trial);
+//                                truck.end = trial;
+//                                truck.initialLoad += trial.delivery;
+//                            } else {
+//                                trial.infeasible = true;
+//                            }
+//                        }while (!viavel || escolhidos.isEmpty());
 
-                        if (feasibleRoute) {
-                            loadTrial += trial.pickup - trial.delivery;
-                            if (loadTrial > capacity) {
-                                trial.infeasible = true;
-                            } else {
-                                // cliente viavel
-                                Link link = new Link(end, trial, false);
-                                totalCost += link.distance * type.variableCost;
+                        //escolha em ordem apartir de uma escolha aleatoria primaria entre os selecionados
+                        int chosenNumber = randomGenerator.nextInt(escolhidos.size());
+                        int index = chosenNumber;
+                        do{
+                            trial = escolhidos.get(index);
+                            assert trial != null;
+                            viavel = viabilidade(trial, truck);
+                            if (viavel) {
+                                Link link = new Link(truck.end, trial, false);
+                                totalCost += link.distance * truck.variableCost;
                                 freeNodes.remove(trial);
-                                nodes.add(trial);
-                                end = trial;
-                                initialLoad += trial.delivery;
+                                truck.nodes.add(trial);
+                                truck.end = trial;
+                                truck.initialLoad += trial.delivery;
+                                break;
+                            } else {
+                                trial.infeasible = true;
                             }
-                        }
+                            index++;
+                            if(index > escolhidos.size()){
+                                index = 0;
+                            }
+                        }while (chosenNumber == index);
 
+                    }else{
+                        assert trial != null;
+                        viavel = viabilidade(trial, truck);
+
+                        if (viavel) {
+                            Link link = new Link(truck.end, trial, false);
+                            totalCost += link.distance * truck.variableCost;
+                            freeNodes.remove(trial);
+                            truck.nodes.add(trial);
+                            truck.end = trial;
+                            truck.initialLoad += trial.delivery;
+                        } else {
+                            trial.infeasible = true;
+                        }
                     }
+
                     //fim teste de viabilidade
+
 
 //                    if (trial.infeasible) {
 //                        ss++;
@@ -130,19 +173,19 @@ public class SemiGreeedy {
 //                    }
 
                     // teste de parada
-                    feasibleNodes = false;
+                    truck.feasibleNodes = false;
                     for (Node next : freeNodes) {
                         if (!next.infeasible) {
-                            feasibleNodes = true;
+                            truck.feasibleNodes = true;
                             break;
                         }
                     }
                     //fim teste de parada
 
                 }
-                Link link = new Link(nodes.get(nodes.size() - 1), nodes.get(0), false);
-                totalCost += link.distance * type.variableCost;
-                routes.add(new Route(type, nodes));
+                Link link = new Link(truck.nodes.get(truck.nodes.size() - 1), truck.nodes.get(0), false);
+                totalCost += link.distance * truck.variableCost;
+                routes.add(new Route(truck.type, truck.nodes));
                 // fim rota do caminhão
             }
 
@@ -157,5 +200,27 @@ public class SemiGreeedy {
         }
         if (solution != null)
             printer.printf("%8.2f%6.1f%15d\n", solution.totalCost, currentTime, iteration);
+    }
+
+    public Boolean viabilidade(Node trial, Truck truck) {
+        double loadTrial = truck.initialLoad + trial.delivery;
+        if (loadTrial > truck.capacity) {
+            return false;
+        } else {
+            for (int m = 1; m < truck.nodes.size(); m++) {
+                Node next = truck.nodes.get(m);
+                loadTrial += next.pickup - next.delivery;
+                if (loadTrial > truck.capacity) {
+                    return false;
+                }
+            }
+            loadTrial += trial.pickup - trial.delivery;
+            if (loadTrial > truck.capacity) {
+                return false;
+            } else {
+                //cliente viavel
+                return true;
+            }
+        }
     }
 }

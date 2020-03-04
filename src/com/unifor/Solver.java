@@ -34,25 +34,25 @@ public class Solver {
                         Data data = new Data(filename);
                         PrintStream printerEvolution;
                         int greedyTestNum = 1;
-
+/*
                         printerEvolution = new PrintStream(fileDirectory + "/" + filename + "--" + greedyTestNum + "-" + String.format("-rate-%4.2f", rate) + String.format("-exec-%02d", exec) + ".evo");
                         Greedy2 greedy2 = new Greedy2(greedyTestNum, data, rate, timeLimit, printerEvolution);
                         greedy2.solution.exportSolution(fileDirectory + "/" + filename + "--" + greedyTestNum + "-" + String.format("-rate-%4.2f", rate) + String.format("-exec-%02d", exec) + ".sol");
 
 
-/*
+
                         printerEvolution = new PrintStream(fileDirectory + "/" + filename + "--" + greedyTestNum + "-" + String.format("-rate-%4.2f", rate) + String.format("-exec-%02d", exec) + ".evo");
                         Greedy greedy = new Greedy(data, rate, timeLimit, printerEvolution);
                         greedy.solution.exportSolution(fileDirectory + "/" + filename + "--" + greedyTestNum + "-" + String.format("-rate-%4.2f", rate) + String.format("-exec-%02d", exec) + ".sol");
 
                         greedyTestNum++;
-
+*/
 
                         printerEvolution = new PrintStream(fileDirectory + "/" + filename + "--" + greedyTestNum + "-" + String.format("-rate-%4.2f", rate) + String.format("-exec-%02d", exec) + ".evo");
                         SemiGreeedy semiGreeedy = new SemiGreeedy(data, timeLimit, printerEvolution);
                         semiGreeedy.solution.exportSolution(fileDirectory + "/" + filename + "--" + greedyTestNum + "-" + String.format("-rate-%4.2f", rate) + String.format("-exec-%02d", exec) + ".sol");
 
-
+/*
                         greedyTestNum++;
 
 

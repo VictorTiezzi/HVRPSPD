@@ -20,8 +20,8 @@ public class Greedy2 {
         boolean feasibleNodes;
         Set<Node> infeasibleNodes;
 
-        public Truck(Type type, Data data) {
-            this.type = type;
+        public Truck(Data data) {
+            this.type = data.types[new Random().nextInt(data.nTypes)];
             capacity = type.capacity;
             fixedCost = type.fixedCost;
             initialLoad = 0;
@@ -52,12 +52,10 @@ public class Greedy2 {
 
             List<Truck> trucks = new ArrayList<>();
             for (int i = 0; i < NumOfTruks; i++) {
-                Type type = data.types[randomGenerator.nextInt(data.nTypes)];
-                Truck truck = new Truck(type, data);
+                Truck truck = new Truck(data);
                 totalCost += truck.fixedCost;
                 trucks.add(truck);
             }
-            Collections.shuffle(trucks);
 
             while (!freeNodes.isEmpty()) {
                 for (Truck truck : trucks) {
@@ -141,8 +139,7 @@ public class Greedy2 {
                     }
                 }
                 if (noneTrucks) {
-                    Type type = data.types[randomGenerator.nextInt(data.nTypes)];
-                    Truck truck = new Truck(type, data);
+                    Truck truck = new Truck(data);
                     totalCost += truck.fixedCost;
                     trucks.add(truck);
                 }
