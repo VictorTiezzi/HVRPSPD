@@ -23,7 +23,7 @@ public class Solver {
                 "instance208", "instance209", "instance210", "instance211", "instance212", "instance213", "instance214"};*/
         int numberOfExecutions = 1;
         double[] rates = {0.99};
-        int timeLimit = 5;
+        int timeLimit = 60;
 
         try {
             for (String filename : filenames) {

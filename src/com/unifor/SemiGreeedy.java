@@ -19,7 +19,6 @@ public class SemiGreeedy {
         Node end;
         boolean first;
         boolean feasibleNodes;
-        //Set<Node> infeasibleNodes;
 
         public Truck(Data data) {
             this.type = data.types[new Random().nextInt(data.nTypes)];
@@ -32,13 +31,11 @@ public class SemiGreeedy {
             end = data.nodes[0];
             first = true;
             feasibleNodes = true;
-            //infeasibleNodes = new HashSet<>();
         }
     }
 
     public SemiGreeedy(Data data, int timeLimit, PrintStream printer) {
         double startTime = System.currentTimeMillis();
-        Random randomGenerator = new Random();
         int iteration = 0;
         double currentTime = 0.0;
         while (currentTime <= timeLimit) {
@@ -55,10 +52,11 @@ public class SemiGreeedy {
                 // dados do caminhão
                 Truck truck = new Truck(data);
                 totalCost += truck.fixedCost;
-                
-                //int suddenlyStops = 3;
-                int numberOfClients = 3;
                 //fim dados do caminhão
+
+//                int suddenlyStops = 6;
+//                int ss = 0;
+                int numberOfClients = 3;
 
                 for (Node next : freeNodes) {
                     next.infeasible = false;
@@ -66,13 +64,12 @@ public class SemiGreeedy {
 
                 // rota do caminhão
                 while (truck.feasibleNodes) {
-                    //int ss = 1;
-                    Node trial = null;
 
                     // escolhendo um cliente
+                    Node trial = null;
                     List<Node> escolhidos = new ArrayList<>();
 
-                    if (truck.first) {
+                    if (!truck.first) {
                         List<Node> list = new ArrayList<>();
 
                         for (Node next : freeNodes) {
@@ -90,8 +87,7 @@ public class SemiGreeedy {
                         }
 
                     } else {
-                        for (int n = 0; n < freeNodes.size(); n++) {
-                            Node next = freeNodes.get(n);
+                        for (Node next : freeNodes) {
                             if (!next.infeasible) {
                                 trial = next;
                                 truck.first = false;
@@ -103,33 +99,14 @@ public class SemiGreeedy {
                     // fim escolhendo um cliente
 
                     // teste de viabilidade
-                    Boolean viavel;
-                    if(!escolhidos.isEmpty()){
-                        //escolha aleatoria entre os selecionados
-//                        do{
-//                            trial = escolhidos.remove(randomGenerator.nextInt(escolhidos.size()));
-//                            assert trial != null;
-//                            viavel = viabilidade(trial, truck);
-//                            if (viavel) {
-//                                Link link = new Link(truck.end, trial, false);
-//                                totalCost += link.distance * truck.type.variableCost;
-//                                freeNodes.remove(trial);
-//                                truck.nodes.add(trial);
-//                                truck.end = trial;
-//                                truck.initialLoad += trial.delivery;
-//                            } else {
-//                                trial.infeasible = true;
-//                            }
-//                        }while (!viavel || escolhidos.isEmpty());
-
+                    if (!escolhidos.isEmpty()) {
                         //escolha em ordem apartir de uma escolha aleatoria primaria entre os selecionados
-                        int chosenNumber = randomGenerator.nextInt(escolhidos.size());
+                        int chosenNumber = new Random().nextInt(escolhidos.size());
                         int index = chosenNumber;
-                        do{
+                        do {
                             trial = escolhidos.get(index);
                             assert trial != null;
-                            viavel = viabilidade(trial, truck);
-                            if (viavel) {
+                            if (viabilidade(trial, truck)) {
                                 Link link = new Link(truck.end, trial, false);
                                 totalCost += link.distance * truck.variableCost;
                                 freeNodes.remove(trial);
@@ -139,18 +116,15 @@ public class SemiGreeedy {
                                 break;
                             } else {
                                 trial.infeasible = true;
+                                index--;
+                                if (index < 0) {
+                                    index = escolhidos.size() - 1;
+                                }
                             }
-                            index++;
-                            if(index > escolhidos.size()){
-                                index = 0;
-                            }
-                        }while (chosenNumber == index);
-
-                    }else{
+                        } while (chosenNumber != index);
+                    } else {
                         assert trial != null;
-                        viavel = viabilidade(trial, truck);
-
-                        if (viavel) {
+                        if (viabilidade(trial, truck)) {
                             Link link = new Link(truck.end, trial, false);
                             totalCost += link.distance * truck.variableCost;
                             freeNodes.remove(trial);
@@ -161,9 +135,7 @@ public class SemiGreeedy {
                             trial.infeasible = true;
                         }
                     }
-
                     //fim teste de viabilidade
-
 
 //                    if (trial.infeasible) {
 //                        ss++;
@@ -224,3 +196,19 @@ public class SemiGreeedy {
         }
     }
 }
+
+//                          escolha aleatoria entre os selecionados
+//                        do{
+//                            trial = escolhidos.remove(randomGenerator.nextInt(escolhidos.size()));
+//                            assert trial != null;
+//                            if (viabilidade(trial, truck)) {
+//                                Link link = new Link(truck.end, trial, false);
+//                                totalCost += link.distance * truck.type.variableCost;
+//                                freeNodes.remove(trial);
+//                                truck.nodes.add(trial);
+//                                truck.end = trial;
+//                                truck.initialLoad += trial.delivery;
+//                            } else {
+//                                trial.infeasible = true;
+//                            }
+//                        }while (!viavel || escolhidos.isEmpty());

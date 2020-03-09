@@ -104,6 +104,7 @@ public class SuddenlyStops {
                             break;
                         }
                     }
+                    //end new code
 
                     feasibleNodes = false;
                     for (Node next : freeNodes) {
