@@ -187,12 +187,8 @@ public class SemiGreeedy {
                 }
             }
             loadTrial += trial.pickup - trial.delivery;
-            if (loadTrial > truck.capacity) {
-                return false;
-            } else {
-                //cliente viavel
-                return true;
-            }
+            //cliente viavel se true
+            return !(loadTrial > truck.capacity);
         }
     }
 }

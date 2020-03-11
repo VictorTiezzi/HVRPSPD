@@ -5,11 +5,16 @@ import com.unifor.data.*;
 import java.io.PrintStream;
 import java.util.*;
 
-public class Greedy {
+/**
+ * Article: A Fast Randomized Algorithm for the Heterogeneous Vehicle Routing Problem with Simultaneous Pickup and Delivery
+ * Available online at https://doi.org/10.3390/a12080158
+ * @author Nepomuceno
+ */
+public class NNRA {
 
     Solution solution;
 
-    public Greedy(Data data, double nearestNeighborProbability, int timeLimit, PrintStream printer) {
+    public NNRA(Data data, double nearestNeighborProbability, int timeLimit, PrintStream printer) {
         double startTime = System.currentTimeMillis();
         Random randomGenerator = new Random();
         int iteration = 0;
@@ -73,8 +78,15 @@ public class Greedy {
                     }
                     // fim escolhendo um cliente
 
+//                    if (trial == null){
+//                        feasibleNodes = false;
+//                        Link link = new Link(nodes.get(nodes.size() - 1), nodes.get(0), false);
+//                        totalCost += link.distance * type.variableCost;
+//                        routes.add(new Route(type, nodes));
+//                        continue;
+//                    }
+
                     // teste de viabilidade
-                    assert trial != null;
                     double loadTrial = initialLoad + trial.delivery;
                     if (loadTrial > capacity) {
                         trial.infeasible = true;
