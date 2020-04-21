@@ -33,12 +33,11 @@ public class Solver {
                     for (double rate : rates) {
                         Data data = new Data(filename);
                         PrintStream printerEvolution;
-                        int NumOfSum = 20;
 
                         printerEvolution = new PrintStream(fileDirectory + "/" + filename + "--Competitor-" + String.format("-rate-%4.2f", rate) + String.format("-exec-%02d", exec) + ".evo");
-                        Competitor competitor = new Competitor(NumOfSum, data, rate, timeLimit, printerEvolution);
+                        Competitor competitor = new Competitor(data, rate, timeLimit, printerEvolution);
                         competitor.solution.exportSolution(fileDirectory + "/" + filename + "--Competitor-" + String.format("-rate-%4.2f", rate) + String.format("-exec-%02d", exec) + ".sol");
-
+//
 //                        printerEvolution = new PrintStream(fileDirectory + "/" + filename + "--NNRA-" + String.format("-rate-%4.2f", rate) + String.format("-exec-%02d", exec) + ".evo");
 //                        NNRA nnra = new NNRA(data, rate, timeLimit, printerEvolution);
 //                        nnra.solution.exportSolution(fileDirectory + "/" + filename + "--NNRA-" + String.format("-rate-%4.2f", rate) + String.format("-exec-%02d", exec) + ".sol");
@@ -48,7 +47,7 @@ public class Solver {
 //                        semiGreeedy.solution.exportSolution(fileDirectory + "/" + filename + "--SemiGreeedy-" + String.format("-rate-%4.2f", rate) + String.format("-exec-%02d", exec) + ".sol");
 //
 //                        printerEvolution = new PrintStream(fileDirectory + "/" + filename + "--SuddenlyStops-" + String.format("-rate-%4.2f", rate) + String.format("-exec-%02d", exec) + ".evo");
-//                        SuddenlyStops suddenlyStops = new SuddenlyStops(data, suddenlyStopsNum, rate, timeLimit, printerEvolution);
+//                        SuddenlyStops suddenlyStops = new SuddenlyStops(data, rate, timeLimit, printerEvolution);
 //                        suddenlyStops.solution.exportSolution(fileDirectory + "/" + filename + "--SuddenlyStops-" + String.format("-rate-%4.2f", rate) + String.format("-exec-%02d", exec) + ".sol");
 
                         printerEvolution.close();

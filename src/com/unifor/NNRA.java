@@ -78,14 +78,6 @@ public class NNRA {
                     }
                     // fim escolhendo um cliente
 
-//                    if (trial == null){
-//                        feasibleNodes = false;
-//                        Link link = new Link(nodes.get(nodes.size() - 1), nodes.get(0), false);
-//                        totalCost += link.distance * type.variableCost;
-//                        routes.add(new Route(type, nodes));
-//                        continue;
-//                    }
-
                     // teste de viabilidade
                     double loadTrial = initialLoad + trial.delivery;
                     if (loadTrial > capacity) {
