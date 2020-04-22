@@ -1,4 +1,4 @@
-package data;
+package com.unifor.data;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class Route {
 		}
 		link = new Link (nodes.get(nodes.size()-1), nodes.get(0), false);
 		cost += link.distance * vehicleType.variableCost;
-		return cost; 
+		return cost;
 	}
 	
 }

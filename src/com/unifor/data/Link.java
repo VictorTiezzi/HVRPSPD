@@ -1,4 +1,4 @@
-package data;
+package com.unifor.data;
 
 public class Link {
 

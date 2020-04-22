@@ -1,4 +1,4 @@
-package data;
+package com.unifor.data;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -11,7 +11,7 @@ public class Data {
 	public int nNodes;
 	public Type[] types;
 	public Node[] nodes;
-			
+
 	public Data(String filename) throws IOException{
 		
 		this.filename = filename;
