@@ -1,4 +1,5 @@
 # HVRPSPD
+
 This is the source code and the final work for the Computer Science course at the University of Fortaleza at 2020 in Fortaleza, Ceará, Brazil.
 
 To run this code, execute "Solver.java" with 4 heuristics.
@@ -37,7 +38,6 @@ Route:             0    1    7   10    0
 
 Vehicle type:  2  
 Route:             0    8    3    0  
-
 
 The file "instance.evo" presents, for a given execution, the evolution of the
 best solution found. Whenever a new best solution is found, its cost is
