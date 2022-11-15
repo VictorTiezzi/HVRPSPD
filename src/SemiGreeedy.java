@@ -1,6 +1,4 @@
-package com.unifor;
-
-import com.unifor.data.*;
+import data.*;
 
 import java.io.PrintStream;
 import java.util.*;
@@ -210,19 +208,3 @@ public class SemiGreeedy {
     }
 
 }
-
-//                          escolha aleatoria entre os selecionados
-//                        do{
-//                            trial = escolhidos.remove(randomGenerator.nextInt(escolhidos.size()));
-//                            assert trial != null;
-//                            if (viabilidade(trial, truck)) {
-//                                Link link = new Link(truck.end, trial, false);
-//                                totalCost += link.distance * truck.type.variableCost;
-//                                freeNodes.remove(trial);
-//                                truck.nodes.add(trial);
-//                                truck.end = trial;
-//                                truck.initialLoad += trial.delivery;
-//                            } else {
-//                                trial.infeasible = true;
-//                            }
-//                        }while (!viavel || escolhidos.isEmpty());

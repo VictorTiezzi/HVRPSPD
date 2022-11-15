@@ -2,7 +2,11 @@
 .idea/
 HVRPSPD.iml
 
+#vscode files
+.vscode/
+
 #Data and solution files
+solution/
 *.sol
 *.evo
 

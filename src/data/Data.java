@@ -1,4 +1,4 @@
-package com.unifor.data;
+package data;
 
 import java.io.FileReader;
 import java.io.IOException;

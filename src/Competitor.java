@@ -1,11 +1,9 @@
-package com.unifor;
-
-import com.unifor.data.*;
+import data.*;
 
 import java.io.PrintStream;
 import java.util.*;
 
-public class SuddenlyStops {
+public class Competitor {
 
     Solution solution;
 
@@ -29,6 +27,7 @@ public class SuddenlyStops {
         Node end;
         boolean first;
         boolean feasibleNodes;
+        Set<Node> infeasibleNodes;
 
         public Truck(Data data) {
             this.type = data.types[new Random().nextInt(data.nTypes)];
@@ -40,6 +39,7 @@ public class SuddenlyStops {
             end = data.nodes[0];
             first = true;
             feasibleNodes = true;
+            infeasibleNodes = new HashSet<>();
         }
     }
 
@@ -53,7 +53,7 @@ public class SuddenlyStops {
         }
     }
 
-    public SuddenlyStops(Data data, double nearestNeighborProbability, int timeLimit, PrintStream printer) {
+    public Competitor(Data data, double nearestNeighborProbability, int timeLimit, PrintStream printer) {
         startTime = System.currentTimeMillis();
 
         this.data = data;
@@ -66,55 +66,55 @@ public class SuddenlyStops {
 
         map = new HashMap<>();
 
-        int suddenlyStops = 1;
+        int NumOfTruks = 1;
         boolean calibrationDone = false;
 
-        int uperMaxNum = 6;
-        int numOfTestsForCalibration = 1000;
+        int uperMaxNum = 4;
+        int numOfTestsForCalibration = 50;
 
         while (currentTime <= timeLimit) {
 
             if(!calibrationDone){
-                suddenlyStops = calibration(uperMaxNum, numOfTestsForCalibration);
+                NumOfTruks = calibration(uperMaxNum, numOfTestsForCalibration);
                 calibrationDone = true;
                 if (currentTime >= timeLimit) {
                     break;
                 }
             }
 
-            Returned returned = suddenlyStopsAlgorithm(suddenlyStops);
+            Returned returned = competitorAlgorithm(NumOfTruks);
 
             iteration++;
             if ((solution == null) || returned.totalCost < solution.totalCost - 0.01) {
                 currentTime = (System.currentTimeMillis() - startTime) / 1000;
                 solution = new Solution(returned.routes, currentTime, iteration);
-                printer.printf("%8.2f%6.1f%15d\n", solution.totalCost, currentTime, iteration);
+                printer.printf("%8.2f%6.1f%15d\n", returned.totalCost, currentTime, iteration);
             }
             currentTime = (System.currentTimeMillis() - startTime) / 1000;
         }
 
-        if (!(solution == null))
+        if (solution != null)
             printer.printf("%8.2f%6.1f%15d\n", solution.totalCost, currentTime, iteration);
 
-        printer.println("Numero de suddenlyStops: " + map.size());
-        printer.println("numero do suddenlyStops usado: " + suddenlyStops);
+        printer.println("Quantidade de truks:" + map.size());
+        printer.println("numero de truks usado:" +  NumOfTruks);
 
     }
 
     public int calibration(int uperMaxNum, int numOfTestForCalibration) {
 
-        int suddenlyStops = 1;
+        int NumOfTruks = 1;
         int uper = 0;
-        boolean stopCalibration = false;
+        boolean stop = false;
 
-        while (!stopCalibration) {
-            map.put(suddenlyStops, new ArrayList<>());
+        while (!stop) {
+            map.put(NumOfTruks, new ArrayList<>());
 
             for (int j = 0; j < numOfTestForCalibration; j++) {
-                Returned returned = suddenlyStopsAlgorithm(suddenlyStops);
-                ArrayList<Double> list = map.get(suddenlyStops);
+                Returned returned = competitorAlgorithm(NumOfTruks);
+                ArrayList<Double> list = map.get(NumOfTruks);
                 list.add(returned.totalCost);
-                map.put(suddenlyStops, list);
+                map.put(NumOfTruks, list);
 
                 iteration++;
                 if ((solution == null) || returned.totalCost < solution.totalCost - 0.01) {
@@ -124,16 +124,16 @@ public class SuddenlyStops {
                 }
                 currentTime = (System.currentTimeMillis() - startTime) / 1000;
 
-                if (currentTime >= timeLimit) {
+                if (currentTime >= timeLimit){
                     break;
                 }
             }
-            if (currentTime >= timeLimit) {
+            if (currentTime >= timeLimit){
                 break;
             }
 
-            if (suddenlyStops != 1) {
-                if (average(map.get(suddenlyStops)) - average(map.get(suddenlyStops - 1)) >= 0) {
+            if (NumOfTruks != 1) {
+                if (average(map.get(NumOfTruks)) - average(map.get(NumOfTruks - 1)) >= 0) {
                     uper++;
                 } else {
                     uper--;
@@ -144,11 +144,11 @@ public class SuddenlyStops {
             }
 
             if (uper >= uperMaxNum) {
-                stopCalibration = true;
+                stop = true;
                 double menor = Double.MAX_VALUE;
                 int num = -1;
 
-                for (int i = 1; i <= suddenlyStops; i++) {
+                for (int i = 1; i <= NumOfTruks; i++) {
                     double aux = Collections.min(map.get(i));
                     if (aux < menor) {
                         menor = aux;
@@ -156,17 +156,17 @@ public class SuddenlyStops {
                     }
                 }
 
-                suddenlyStops = num;
+                NumOfTruks = num;
             } else {
-                suddenlyStops++;
+                NumOfTruks++;
             }
 
         }
 
-        return suddenlyStops;
+        return NumOfTruks;
     }
 
-    public Returned suddenlyStopsAlgorithm(int suddenlyStops) {
+    public Returned competitorAlgorithm(int NumOfTruks) {
 
         List<Route> routes = new ArrayList<>();
         List<Node> freeNodes = new ArrayList<>(Arrays.asList(data.nodes));
@@ -174,26 +174,30 @@ public class SuddenlyStops {
         Collections.shuffle(freeNodes);
 
         double totalCost = 0;
-        while (!freeNodes.isEmpty()) {
-
+        List<Truck> trucks = new ArrayList<>();
+        for (int i = 0; i < NumOfTruks; i++) {
             Truck truck = new Truck(data);
             totalCost += truck.fixedCost;
+            trucks.add(truck);
+        }
 
-            int ss = 0;
+        while (!freeNodes.isEmpty()) {
 
-            for (Node next : freeNodes) {
-                next.infeasible = false;
+            if (trucks.isEmpty()) {
+                Truck truck = new Truck(data);
+                totalCost += truck.fixedCost;
+                trucks.add(truck);
             }
 
-            while (truck.feasibleNodes) {
+            for (Truck truck : trucks) {
+
                 Node trial = null;
                 int trialIndex = -1;
-
                 if (!truck.first && new Random().nextDouble() < nearestNeighborProbability) {
                     double minDistance = Double.MAX_VALUE;
                     for (int n = 0; n < freeNodes.size(); n++) {
                         Node next = freeNodes.get(n);
-                        if (!next.infeasible) {
+                        if (!truck.infeasibleNodes.contains(next)) {
                             Link link = new Link(truck.end, next, false);
                             if (link.distance < minDistance) {
                                 minDistance = link.distance;
@@ -205,13 +209,21 @@ public class SuddenlyStops {
                 } else {
                     for (int n = 0; n < freeNodes.size(); n++) {
                         Node next = freeNodes.get(n);
-                        if (!next.infeasible) {
+                        if (!truck.infeasibleNodes.contains(next)) {
                             trial = next;
                             trialIndex = n;
                             truck.first = false;
                             break;
                         }
                     }
+                }
+
+                if (trial == null) {
+                    truck.feasibleNodes = false;
+                    Link link = new Link(truck.nodes.get(truck.nodes.size() - 1), truck.nodes.get(0), false);
+                    totalCost += link.distance * truck.type.variableCost;
+                    routes.add(new Route(truck.type, truck.nodes));
+                    continue;
                 }
 
                 if (viability(trial, truck)) {
@@ -221,30 +233,19 @@ public class SuddenlyStops {
                     truck.end = trial;
                     truck.initialLoad += trial.delivery;
                 } else {
-                    trial.infeasible = true;
+                    truck.infeasibleNodes.add(trial);
                 }
 
-                //new code
-                if (trial.infeasible) {
-                    ss++;
-                    if (suddenlyStops <= ss) {
-                        break;
-                    }
-                }
-                //end new code
-
-                truck.feasibleNodes = false;
-                for (Node next : freeNodes) {
-                    if (!next.infeasible) {
-                        truck.feasibleNodes = true;
-                        break;
-                    }
-                }
             }
+            trucks.removeIf(truck -> !truck.feasibleNodes);
+        }
+
+        for (Truck truck : trucks) {
             Link link = new Link(truck.nodes.get(truck.nodes.size() - 1), truck.nodes.get(0), false);
             totalCost += link.distance * truck.type.variableCost;
             routes.add(new Route(truck.type, truck.nodes));
         }
+
         return new Returned(totalCost, routes);
     }
 

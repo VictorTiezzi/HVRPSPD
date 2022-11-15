@@ -1,6 +1,4 @@
-package com.unifor;
-
-import com.unifor.data.*;
+import data.*;
 
 import java.io.PrintStream;
 import java.util.*;

@@ -1,4 +1,24 @@
 # HVRPSPD
+This is the source code and the final work for the Computer Science course at the University of Fortaleza at 2020 in Fortaleza, Ceará, Brazil.
+
+To run this code, execute "Solver.java" with 4 heuristics.
+
+My paper is HVRPSPD_Victor_Tiezzi_Henriques.pdf file, is in portuguese
+
+Fast Heuristics for Heterogeneous Vehicle Routing Problem with Simultaneous Pickup and Delivery
+
+ABSTRACT
+The Heterogeneous Vehicle Routing Problem with Simultaneous Pickup and Delivery (HVRPSPD),
+aims to generate a route for a heterogeneous vehicle fleet minimizing costs and meeting all
+customer demand. This problem is commonly applied to companies that want to reduce their
+logistics costs. The aim of this work is to create greedy heuristics that generate viable solutions with low costs for HVRPSPD, for this reason, 3 heuristics were developed based on the
+Nearest-Neighbor-Based Randomized Algorithm (NNRA) with competitive, Sudden Stop and
+Semi-Greedy strategies. The performance of the developed heuristics are compared to the NNRA
+its evaluated performance. The results found showed that the heuristic of the sudden stop stood
+out for presenting significant improvement in the quality of the solutions.
+
+Keywords: Greedy Algorithm. Vehicle Routing Problem. Nearest-Neighbor-Based Randomized
+Algorithm. Sudden Stop. Semi-Greedy. Competitive
 
 Detailed results for each execution are prensented in 2 different files. The
 file "instance.sol" presents, for a given execution, the total cost of the best
